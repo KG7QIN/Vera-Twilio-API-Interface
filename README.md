@@ -27,21 +27,21 @@ This is plugin  will allow to you have your Vera call and say text, or send SMS 
 
 
 These are mandatory items that you need to configure before you can use the plugin:
-* Account SID - Your Twilio.com account SID
-* Auth Token - Your Twilio.com account Authenrication Token
-* Caller ID - Phone number authorized to make calls
+* **Account SID** - Your Twilio.com account SID
+* **Auth Token** - Your Twilio.com account Authenrication Token
+* **Caller ID** - Phone number authorized to make calls
 
 These two items are optional (unless using the !CustomVoiceCall function):
 
-* Custom MSG URL - URL that points to a custom TwiML creator
-* Custom MSG Var Name - Custom Message variable passed in URL
+* **Custom MSG URL** - URL that points to a custom TwiML creator
+* **Custom MSG Var Name** - Custom Message variable passed in URL
 
 
 There are three functions that you can use:
 
-* InitiateVoiceCall
-* SendSMSMessage
-* CustomVoiceCall
+* **InitiateVoiceCall**
+* **SendSMSMessage**
+* **CustomVoiceCall**
 
 The Twilio.com API's use what they have dubbed TwiML, which is an XML DTD that the API understands for passing it commands.
 
@@ -49,18 +49,18 @@ The Twilio.com API's use what they have dubbed TwiML, which is an XML DTD that t
 ----
 
 
-* InitiateVoiceCall will use the free twimlets.com/message TwiML generator to have Twilio's API speak the message you pass to the function.
+* **InitiateVoiceCall** will use the free twimlets.com/message TwiML generator to have Twilio's API speak the message you pass to the function.
 
-(Note:  we will assume our plugin has an ID of 66 in the following examples.  Make sure you replace the 66 in the code below with the actual ID number of the plugin on your system)
+**(Note:  we will assume our plugin has an ID of 66 in the following examples.  Make sure you replace the 66 in the code below with the actual ID number of the plugin on your system)**
 
 Example:
 
     luup.call_action("urn:twilioapi-org:serviceId:TwilioInterface1", "InitiateVoiceCall",{ PhoneNumber= "555-555-1212", Message="Greetings from your Vera Home Automation System"}, 66)
 
 
-* PhoneNumber = number of recipient
+* **PhoneNumber** = number of recipient
 
-* SendSMSMessage will send an SMS using Twilio's API:
+* **SendSMSMessage** will send an SMS using Twilio's API:
 
 
 Example:
@@ -68,17 +68,17 @@ Example:
     luup.call_action("urn:twilioapi-org:serviceId:TwilioInterface1", "SendSMSMessage",{ PhoneNumber= "555-555-1212", Message="Greetings from your Vera Home Automation System"}, 66)
 
 
-* PhoneNumber = number of recipient
+* **PhoneNumber** = number of recipient
 
-* CustomVoiceCall will initiate a voice call, using the URL you specified in the Custom MSG URL by itself or with the Custom MSG Var Name config items.
+* **CustomVoiceCall** will initiate a voice call, using the URL you specified in the Custom MSG URL by itself or with the Custom MSG Var Name config items.
 
 Example:
 
     luup.call_action("urn:twilioapi-org:serviceId:TwilioInterface1", "CustomVoiceCall",{ PhoneNumber= "555-555-1212", Message="Hi there", MsgFlag=2}, 66)
 
 
-* PhoneNumber = number of recipient
-* MsgFlag = 1 to only use custom URL, 2 to use custom URL and message variable name
+* **PhoneNumber** = number of recipient
+* **MsgFlag** = 1 to only use custom URL, 2 to use custom URL and message variable name
 
 
 ----
