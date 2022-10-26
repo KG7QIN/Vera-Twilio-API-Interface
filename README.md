@@ -53,7 +53,7 @@ The Twilio.com API's use what they have dubbed TwiML, which is an XML DTD that t
 
 (Note:  we will assume our plugin has an ID of 66 in the following examples.  Make sure you replace the 66 in the code below with the actual ID number of the plugin on your system)
 
-* Example:
+Example:
 
     luup.call_action("urn:twilioapi-org:serviceId:TwilioInterface1", "InitiateVoiceCall",{ PhoneNumber= "555-555-1212", Message="Greetings from your Vera Home Automation System"}, 66)
 
@@ -63,7 +63,7 @@ The Twilio.com API's use what they have dubbed TwiML, which is an XML DTD that t
 * SendSMSMessage will send an SMS using Twilio's API:
 
 
-* Example:
+Example:
 
     luup.call_action("urn:twilioapi-org:serviceId:TwilioInterface1", "SendSMSMessage",{ PhoneNumber= "555-555-1212", Message="Greetings from your Vera Home Automation System"}, 66)
 
