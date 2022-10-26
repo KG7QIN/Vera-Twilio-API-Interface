@@ -1,0 +1,247 @@
+<?xml version="1.0"?>
+<implementation>
+<functions>
+
+-- ******************************************************
+--Twilio.com API Interface Plugin v1.0
+--Copyright (c) 2013, Stacy Olivas - olivas@eurisko.ws
+--All rights reserved.
+--
+--Redistribution and use in source and binary forms, with or without modification, are
+--permitted provided that the following conditions are met:
+--
+--Redistributions of source code must retain the above copyright notice, this list of 
+--conditions and the following disclaimer.
+--
+--Redistributions in binary form must reproduce the above copyright notice, this list of 
+--conditions and the following disclaimer in the documentation and/or other materials provided
+--with the distribution.
+--
+--THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED 
+--WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
+--PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+--ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+--TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
+--HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+--NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+--POSSIBILITY OF SUCH DAMAGE.
+-- ******************************************************
+
+-- Log function
+function TWILog(message, lvl)
+   luup.log("Twilio API Interface - " .. message, lvl)
+end
+
+-- url encode strings for passing to the Twilio.com API
+function url_encode(str)
+  if (str) then
+    str = string.gsub (str, "\n", "\r\n")
+    str = string.gsub (str, "([^%w %-%_%.%~])",
+        function (c) return string.format ("%%%02X", string.byte(c)) end)
+    str = string.gsub (str, " ", "+")
+  end
+  return str	
+end
+  
+ -- Startup and initialization
+  function TWI_startup(twi_device)
+
+-- check for first run initialization    
+    local TWIAccountSID = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Account SID", twi_device)
+    local TWIAuthTOKEN = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Auth Token", twi_device)
+    local TWICallerID = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Caller ID", twi_device)
+    local TWICustomMSGUrl = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Custom MSG URL", twi_device)
+    local TWICustomMSGVarName = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Custom MSG Var Name", twi_device)
+   
+    if (TWIAccountSID == nil) then
+      TWILog("No AccountSID specified")
+      luup.variable_set("urn:twilioapi-org:serviceId:TwilioInterface1", "Account SID", "empty", twi_device)
+    end
+
+  if (TWIAuthTOKEN == nil) then
+      luup.variable_set("urn:twilioapi-org:serviceId:TwilioInterface1", "Auth Token", "empty", twi_device)
+    end
+ 
+   if (TWICallerID == nil) then
+      luup.variable_set("urn:twilioapi-org:serviceId:TwilioInterface1", "Caller ID", "empty", twi_device)
+    end
+    
+   if (TWICustomMSGUrl == nil) then
+      luup.variable_set("urn:twilioapi-org:serviceId:TwilioInterface1", "Custom MSG URL", "twimlets.com/message", twi_device)
+    end
+
+   if (TWICustomMSGVarName == nil) then
+      luup.variable_set("urn:twilioapi-org:serviceId:TwilioInterface1", "Custom MSG Var Name", "Message", twi_device)
+    end
+
+
+-- reload variables again, warn and stop if not set
+    local TWIAccountSID = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Account SID", twi_device)
+    local TWIAuthTOKEN = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Auth Token", twi_device)
+    local TWICallerID = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Caller ID", twi_device)
+    local TWICustomMSGVarName = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Custom MSG Var Name", twi_device)
+ 
+    if (TWIAccountSID == "empty") then
+      TWILog("No AccountSID specified",1)
+      luup.task('Set AccountSID from your Twilio.com account',2,'Twilio API Interface',-1)
+      return false
+    end
+ 
+    if (TWIAuthTOKEN == "empty") then
+      TWILog("No Auth Token specified",1)
+      luup.task('Set Auth Token from your Twilio.com account',2,'Twilio API Interface',-1)
+      return false
+    end
+ 
+    if (TWICallerID == "empty") then
+      TWILog("No Caller ID specified",1)
+      luup.task('Set Caller ID from your Twilio.com account',2,'Twilio API Interface',-1)
+      return false
+    end
+ 
+-- log startup banner message for this instance of the plugin
+    TWILog("Account SID is " .. TWIAccountSID .. " / Auth Token is " .. TWIAuthTOKEN .. " / Caller ID is " .. TWICallerID,4)
+ 
+end
+
+-- ****************************************************************************
+-- Initiate a voice call using Twilio.com API credentials and twimlets.com
+-- ****************************************************************************
+ function startVoiceCall(twi_device, PhoneNumber, Message)
+
+-- Check for empty PhoneNumber being passed     
+     if (PhoneNumber == nil) then
+        TWILog("No phone number given",1)
+        luup.task('No phone number given',2,'Twilio API Interface',-1)  
+     end
+ 
+-- read in settings
+    local TWIAccountSID = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Account SID", twi_device)
+    local TWIAuthTOKEN = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Auth Token", twi_device)
+    local TWICallerID = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Caller ID", twi_device)
+ 
+ -- send info to log for debugging  
+    TWILog("SMS initiated: " .. PhoneNumber .. "," .. Message,4)   
+    TWILog("Caller ID: " .. TWICallerID,4)
+    TWILog("Account SID: " .. TWIAccountSID,4)
+    TWILog("Auth Token: " .. TWIAuthTOKEN,4)
+       
+    os.execute("curl -k -X POST https://api.twilio.com/2008-08-01/Accounts/" .. TWIAccountSID .. "/Calls --data-urlencode " .. "\034" .. "Called=" .. PhoneNumber .. "\034" .. " --data-urlencode " .. "\034" .. "Caller=" .. TWICallerID .. "\034" .. " --data-urlencode " .. "\034" .. "Url=http:" .. "\047" .. "\047" .. "twimlets.com/message?Message=" .. url_encode(Message)  .. "\034" .. " -u " .. TWIAccountSID .. ":" .. TWIAuthTOKEN)
+   
+ end
+ 
+-- ****************************************************************************
+-- Send an SMS using Twilio.com API credentials   
+-- ****************************************************************************
+ function sendSMS(twi_device, PhoneNumber, Message)
+     
+     if (PhoneNumber == nil) then
+        TWILog("No phone number given",1)
+        luup.task('No phone number given',2,'Twilio API Interface',-1)  
+     end
+ 
+-- read in settings
+    local TWIAccountSID = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Account SID", twi_device)
+    local TWIAuthTOKEN = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Auth Token", twi_device)
+    local TWICallerID = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Caller ID", twi_device)
+
+-- send info to log for debugging     
+    TWILog("Call initiated: " .. PhoneNumber .. ", " .. Message,4)   
+    TWILog("Caller ID: " .. TWICallerID,4)
+    TWILog("Account SID: " .. TWIAccountSID,4)
+    TWILog("Auth Token: " .. TWIAuthTOKEN,4)
+         
+    os.execute("curl -k -X POST https://api.twilio.com/2010-04-01/Accounts/" .. TWIAccountSID .. "\047" .. "SMS" .. "\047" .. "Messages --data-urlencode " .. "\034" .. "To=" .. PhoneNumber .. "\034" .. " --data-urlencode " .. "\034" .. "From=" .. TWICallerID .. "\034" .. " --data-urlencode " .. "\034" .. "Body=" .. Message.. "\034" .. " -u " .. TWIAccountSID .. ":" .. TWIAuthTOKEN)
+    
+ end
+
+ 
+-- ****************************************************************************
+-- Initiate a voice call using Twilio.com API credentials and Custom URL to generate TwiML
+-- ****************************************************************************
+ function startCustomVoiceCall(twi_device, PhoneNumber, Message, MsgFlag)
+
+    TWILog("Start Custom Voice Call", 4)
+     
+-- Check for empty PhoneNumber being passed
+     if (PhoneNumber == nil) then
+        TWILog("No phone number given",1)
+        luup.task('No phone number given',2,'Twilio API Interface',-1)  
+     end
+ 
+-- read in settings
+    local TWIAccountSID = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Account SID", twi_device)
+    local TWIAuthTOKEN = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Auth Token", twi_device)
+    local TWICallerID = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Caller ID", twi_device)
+    local TWICustomMSGUrl = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Custom MSG URL", twi_device)
+    local TWICustomMSGVarName = luup.variable_get("urn:twilioapi-org:serviceId:TwilioInterface1", "Custom MSG Var Name", twi_device)
+
+ -- send info to log for debugging  
+    TWILog("Call initiated: " .. PhoneNumber .. "," .. Message,4)   
+    TWILog("Caller ID: " .. TWICallerID,4)
+    TWILog("Account SID: " .. TWIAccountSID,4)
+    TWILog("Auth Token: " .. TWIAuthTOKEN,4)
+      
+-- check for empty URL in TWICustomMSGUrl
+    if (TWICustomMSGUrl == "empty") then
+      TWILog("No Custom Message URL specified",1)
+      luup.task('Set Custom MSG URL  to use this feature',2,'Twilio API Interface',-1)
+      return false
+    end
+
+    TWILog("Custom URL: " .. TWICustomMSGUrl,4)
+ 
+-- check for empty name in TWICustomMSGVarName
+    if (TWICustomMSGVarName == nil) then
+        TWILog("No custom variable name given",1)
+        luup.task('Set custom variable name or use empty',2,'Twilio API Interface',-1)  
+    end
+
+      TWILog("Custom MSG Var Name: " .. TWICustomMSGVarName,4)
+ 
+    local TWICmdLine = "https://api.twilio.com/2008-08-01/Accounts/" .. TWIAccountSID .. "/Calls --data-urlencode " .. "\034" .. "Called=" .. PhoneNumber .. "\034" .. " --data-urlencode " .. "\034" .. "Caller=" .. TWICallerID .. "\034" .. " --data-urlencode " .. "\034" .. "Url=http:" .. "\047" .. "\047"
+ 
+    TWILog("CmdLine: " .. TWICmdLine,4)
+    
+    if (tonumber(MsgFlag) == 1) then      
+        TWILog("Using Custom URL" ,4)
+        os.execute("curl -k -X POST " .. TWICmdLine .. TWICustomMSGUrl .. "?Message=" .. url_encode(Message)  .. "\034" .. " -u " .. TWIAccountSID .. ":" .. TWIAuthTOKEN)
+   elseif (tonumber(MsgFlag) == 2) then
+         TWILog("Using Custom URL and Message Variable Name",4)
+       os.execute("curl -k -X POST " .. TWICmdLine .. TWICustomMSGUrl .. "?" .. TWICustomMSGVarName .. "=" .. url_encode(Message)  .. "\034" .. " -u " .. TWIAccountSID .. ":" .. TWIAuthTOKEN)
+    
+   else
+      TWILog("startCustomVoiceCall1 - invalid message flag passed, must be 1 or 2",1)
+      luup.task('startCustomVoiceCall1 - invalid message flag passed, must be 1 or 2', 2, 'Twilio API Interface', -1) 
+    end  
+
+    
+ end
+ 
+  </functions>
+  <startup>TWI_startup</startup>
+ <actionList>
+    <action>
+       <serviceId>urn:twilioapi-org:serviceId:TwilioInterface1</serviceId>
+       <name>InitiateVoiceCall</name>
+       <run>
+          startVoiceCall(lul_device, lul_settings.PhoneNumber or "", lul_settings.Message or "")
+       </run>
+    </action>
+    <action>
+       <serviceId>urn:twilioapi-org:serviceId:TwilioInterface1</serviceId>
+       <name>SendSMSMessage</name>
+       <run>
+          sendSMS(lul_device, lul_settings.PhoneNumber or "", lul_settings.Message or "")
+       </run>
+    </action>
+        <action>
+       <serviceId>urn:twilioapi-org:serviceId:TwilioInterface1</serviceId>
+       <name>CustomVoiceCall</name>
+       <run>
+          startCustomVoiceCall(lul_device, lul_settings.PhoneNumber or "", lul_settings.Message or "", lul_settings.MsgFlag)
+       </run>
+    </action>
+
+  </actionList>
+</implementation>

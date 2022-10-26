@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+	<specVersion>
+		<major>1</major>
+		<minor>0</minor>
+	</specVersion>
+	<device>
+		<deviceType>urn:schemas-twilioapi-org:device:TwilioInterface:1</deviceType>
+		<staticJson>D_TwilioInterface1.json</staticJson> 
+		<friendlyName>Twilio.com API Interface</friendlyName>
+		<manufacturer>Digiflux.org</manufacturer>
+		<manufacturerURL>http://new.digiflux.org</manufacturerURL>
+		<modelDescription>Twilio.com API Interface for Vera</modelDescription>
+		<modelName>TwilioInterface</modelName>
+		<modelNumber>1.0</modelNumber>
+		<serviceList>
+			<service>
+				<serviceType>urn:schemas-twilioapi-org:service:TwilioInterface:1</serviceType>
+				<serviceId>urn:twilioapi-org:serviceId:TwilioInterface1</serviceId>
+				<SCPDURL>S_TwilioInterface1.xml</SCPDURL>
+			</service>
+		</serviceList>
+		<implementationList>
+			<implementationFile>I_TwilioInterface1.xml</implementationFile>
+		</implementationList>
+		<presentationURL>new.digiflux.org/TwilioInterface.html</presentationURL>
+	</device>
+</root>
