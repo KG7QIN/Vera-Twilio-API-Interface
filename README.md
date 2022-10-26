@@ -12,8 +12,8 @@ I have moved it here so that it can be with the other code/projects I have on Gi
 **Pull requests**:  Please submit all PRs against the develop branch.  Include both a description and any instructions on what features you added/fixed in your PR.  
 
 
-Original code posted: http://forum.micasaverde.com/index.php/topic,15499.msg117950.html#msg117950
-Link dead, use Wayback Machine:  https://web.archive.org/web/20150328043128/http://forum.micasaverde.com/index.php/topic,15499.0.html
+* Original code posted: http://forum.micasaverde.com/index.php/topic,15499.msg117950.html#msg117950
+* Link dead, use Wayback Machine:  https://web.archive.org/web/20150328043128/http://forum.micasaverde.com/index.php/topic,15499.0.html
 
 Plugin available from the MiOS App store: [https://apps.mios.com/plugin.php?id=4076]
 
