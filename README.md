@@ -18,7 +18,7 @@ Plugin available from the MiOS App store: [https://apps.mios.com/plugin.php?id=4
 
 ----
 
-## ''You will have to register for an account at [http://www.twilio.com] in order to use this plugin.'' 
+## You will need to register for an account at [http://www.twilio.com] in order to use this plugin.
 
 ----
 ## How to use 
