@@ -49,23 +49,23 @@ The Twilio.com API's use what they have dubbed TwiML, which is an XML DTD that t
 ----
 
 
-'''!InitiateVoiceCall''' will use the free twimlets.com/message TwiML generator to have Twilio's API speak the message you pass to the function.
+* '''!InitiateVoiceCall''' will use the free twimlets.com/message TwiML generator to have Twilio's API speak the message you pass to the function.
 
 ''(Note:  we will assume our plugin has an ID of 66 in the following examples.  Make sure you replace the 66 in the code below with the actual ID number of the plugin on your system)''
 
 * Example:
 
-   luup.call_action("urn:twilioapi-org:serviceId:TwilioInterface1", "InitiateVoiceCall",{ PhoneNumber= "555-555-1212", Message="Greetings from your Vera Home Automation System"}, 66)
+    luup.call_action("urn:twilioapi-org:serviceId:TwilioInterface1", "InitiateVoiceCall",{ PhoneNumber= "555-555-1212", Message="Greetings from your Vera Home Automation System"}, 66)
 
 
-'''!PhoneNumber''' = number of recipient
+* '''!PhoneNumber''' = number of recipient
 
-'''SendSMSMessage''' will send an SMS using Twilio's API:
+* '''SendSMSMessage''' will send an SMS using Twilio's API:
 
 
 * Example:
 
-   luup.call_action("urn:twilioapi-org:serviceId:TwilioInterface1", "SendSMSMessage",{ PhoneNumber= "555-555-1212", Message="Greetings from your Vera Home Automation System"}, 66)
+    luup.call_action("urn:twilioapi-org:serviceId:TwilioInterface1", "SendSMSMessage",{ PhoneNumber= "555-555-1212", Message="Greetings from your Vera Home Automation System"}, 66)
 
 
 * '''!PhoneNumber''' = number of recipient
@@ -74,7 +74,7 @@ The Twilio.com API's use what they have dubbed TwiML, which is an XML DTD that t
 
 Example:
 
-   luup.call_action("urn:twilioapi-org:serviceId:TwilioInterface1", "CustomVoiceCall",{ PhoneNumber= "555-555-1212", Message="Hi there", MsgFlag=2}, 66)
+    luup.call_action("urn:twilioapi-org:serviceId:TwilioInterface1", "CustomVoiceCall",{ PhoneNumber= "555-555-1212", Message="Hi there", MsgFlag=2}, 66)
 
 
 * '''!PhoneNumber''' = number of recipient
